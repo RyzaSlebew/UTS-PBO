@@ -1,45 +1,66 @@
-package Model;
+package model;
 
-public class TimEsports {
+public class TimEsports extends Tournament {
+    private int jumlahPemain;
+    private double diskonKomunitas; // Format desimal (misal 0.10 untuk 10%)
+    private double biayaFasilitasVIP;
 
-    private int idTim;
-    private String namaTim;
-    private String kaptenTim;
-    private KategoriGame kategoriGame;
-    private Tournament tournament;
-
-    public TimEsports(int idTim, String namaTim, String kaptenTim, 
-                      KategoriGame kategoriGame, Tournament tournament) {
-        this.idTim = idTim;
-        this.namaTim = namaTim;
-        this.kaptenTim = kaptenTim;
-        this.kategoriGame = kategoriGame;
-        this.tournament = tournament;
+    public TimEsports(String idPendaftaran, String namaTim, double biayaPendaftaranDasar, int jumlahPemain, double diskonKomunitas, double biayaFasilitasVIP) {
+        super(idPendaftaran, namaTim, biayaPendaftaranDasar);
+        this.jumlahPemain = jumlahPemain;
+        this.diskonKomunitas = diskonKomunitas;
+        this.biayaFasilitasVIP = biayaFasilitasVIP;
     }
 
-    public int getIdTim() {
-        return idTim;
+    // Encapsulation: Getter dan Setter
+    public int getJumlahPemain() {
+        return jumlahPemain;
     }
 
-    public void setNamaTim(String namaTim) {
-        this.namaTim = namaTim;
+    public void setJumlahPemain(int jumlahPemain) {
+        if (jumlahPemain > 0) {
+            this.jumlahPemain = jumlahPemain;
+        }
     }
 
-    public void setKaptenTim(String kaptenTim) {
-        this.kaptenTim = kaptenTim;
+    public double getDiskonKomunitas() {
+        return diskonKomunitas;
     }
 
-    public void setKategoriGame(KategoriGame kategoriGame) {
-        this.kategoriGame = kategoriGame;
+    public void setDiskonKomunitas(double diskonKomunitas) {
+        if (diskonKomunitas >= 0 && diskonKomunitas <= 1) {
+            this.diskonKomunitas = diskonKomunitas;
+        }
     }
 
-    public void tampilkanInfo() {
-        System.out.println("ID Tim         : " + idTim);
-        System.out.println("Nama Tim       : " + namaTim);
-        System.out.println("Kapten Tim     : " + kaptenTim);
-        System.out.println("Kategori Game  : " + kategoriGame.getNamaKategori());
-        System.out.println("Turnamen       : " + tournament.getNamaTournament());
-        System.out.println("Lokasi         : " + tournament.getLokasi());
-        System.out.println("-----------------------------------------");
+    public double getBiayaFasilitasVIP() {
+        return biayaFasilitasVIP;
+    }
+
+    public void setBiayaFasilitasVIP(double biayaFasilitasVIP) {
+        if (biayaFasilitasVIP >= 0) {
+            this.biayaFasilitasVIP = biayaFasilitasVIP;
+        }
+    }
+
+    // Method Overriding 1
+    @Override
+    public double hitungTotalBiaya() {
+        double biayaSetelahDiskon = getBiayaPendaftaranDasar() - (getBiayaPendaftaranDasar() * diskonKomunitas);
+        return biayaSetelahDiskon + biayaFasilitasVIP;
+    }
+
+    // METHOD OVERLOADING (Nama method sama: hitungTotalBiaya dengan parameter tanpaVIP)
+    public double hitungTotalBiaya(boolean tanpaVIP) {
+        if (tanpaVIP) {
+            return getBiayaPendaftaranDasar() - (getBiayaPendaftaranDasar() * diskonKomunitas);
+        }
+        return hitungTotalBiaya();
+    }
+
+    // Method Overriding 2
+    @Override
+    public String getJenisPendaftaran() {
+        return "Tim Esports Pro (" + jumlahPemain + " Pemain)";
     }
 }

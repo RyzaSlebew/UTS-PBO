@@ -1,159 +1,154 @@
-package com.mycompany.pendaftaranesports;
+package com.mycompany.pendaftaranevent;
 
-import Model.Tournament;
-import Model.KategoriGame;
-import Model.TimEsports;
+import model.Tournament;
+import model.KategoriGame;
+import model.TimEsports;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Main {
+public class PendaftaranEvent {
+    private static ArrayList<Tournament> daftarPendaftaran = new ArrayList<>();
+    private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
+        // Mengisi Dummy Data Awal
+        isiDummyData();
 
-        ArrayList<TimEsports> daftarTim = new ArrayList<>();
-        Scanner scanner = new Scanner(System.in);
+        int pilihan = 0;
 
-        Tournament tournament = new Tournament(
-                1,
-                "Samarinda E-Sports Championship 2026",
-                "Samarinda Convention Center"
-        );
-
-        boolean berjalan = true;
-
-        while (berjalan) {
-
-            System.out.println("=== SISTEM PENDAFTARAN EVENT E-SPORTS ===");
-            System.out.println("Turnamen : " + tournament.getNamaTournament());
-            System.out.println("Lokasi   : " + tournament.getLokasi());
-            System.out.println("-----------------------------------------");
-            System.out.println("1. Pendaftaran Tim Baru");
-            System.out.println("2. Tampilkan Daftar Tim");
-            System.out.println("3. Ubah Data Tim");
-            System.out.println("4. Hapus Pendaftaran Tim");
-            System.out.println("5. Keluar");
-            System.out.print("Pilih menu (1-5): ");
-
-            int pilihan = scanner.nextInt();
-            scanner.nextLine();
+        do {
+            System.out.println("\n=== SISTEM MANAJEMEN PENDAFTARAN TOURNAMENT ESPORTS ===");
+            System.out.println("1. Tambah Pendaftaran Kategori Game");
+            System.out.println("2. Tambah Pendaftaran Tim Esports Pro");
+            System.out.println("3. Tampilkan Semua Pendaftaran");
+            System.out.println("4. Keluar");
+            
+            pilihan = inputIntegerValid("Pilih menu (1-4): ");
 
             switch (pilihan) {
-
-                case 1 -> {
-                    System.out.println("\n=== PENDAFTARAN TIM BARU ===");
-
-                    System.out.print("ID Tim: ");
-                    int idTim = scanner.nextInt();
-                    scanner.nextLine();
-
-                    System.out.print("Nama Tim: ");
-                    String namaTim = scanner.nextLine();
-
-                    System.out.print("Nama Kapten: ");
-                    String kaptenTim = scanner.nextLine();
-
-                    System.out.print("Kategori Game (MOBA/FPS/dll): ");
-                    String namaKategori = scanner.nextLine();
-
-                    KategoriGame kategoriGame = new KategoriGame(namaKategori);
-
-                    TimEsports timBaru = new TimEsports(
-                            idTim,
-                            namaTim,
-                            kaptenTim,
-                            kategoriGame,
-                            tournament
-                    );
-
-                    daftarTim.add(timBaru);
-
-                    System.out.println(">> Tim berhasil terdaftar dalam turnamen!");
-                }
-
-                case 2 -> {
-                    System.out.println("\n=== DAFTAR TIM TERDAFTAR ===");
-
-                    if (daftarTim.isEmpty()) {
-                        System.out.println("Belum ada tim yang terdaftar.");
-                    } else {
-                        for (TimEsports t : daftarTim) {
-                            t.tampilkanInfo();
-                        }
-                    }
-                }
-
-                case 3 -> {
-                    System.out.println("\n=== UBAH DATA TIM ===");
-
-                    System.out.print("Masukkan ID Tim: ");
-                    int idTarget = scanner.nextInt();
-                    scanner.nextLine();
-
-                    boolean ditemukan = false;
-
-                    for (TimEsports t : daftarTim) {
-
-                        if (t.getIdTim() == idTarget) {
-
-                            System.out.print("Nama Tim Baru: ");
-                            t.setNamaTim(scanner.nextLine());
-
-                            System.out.print("Nama Kapten Baru: ");
-                            t.setKaptenTim(scanner.nextLine());
-
-                            System.out.print("Kategori Game Baru: ");
-                            String namaKategori = scanner.nextLine();
-
-                            t.setKategoriGame(new KategoriGame(namaKategori));
-
-                            System.out.println(">> Data tim berhasil diperbarui!");
-
-                            ditemukan = true;
-                            break;
-                        }
-                    }
-
-                    if (!ditemukan) {
-                        System.out.println(">> Tim tidak ditemukan!");
-                    }
-                }
-
-                case 4 -> {
-                    System.out.println("\n=== HAPUS PENDAFTARAN TIM ===");
-
-                    System.out.print("Masukkan ID Tim: ");
-                    int idTarget = scanner.nextInt();
-
-                    boolean ditemukan = false;
-
-                    for (TimEsports t : daftarTim) {
-
-                        if (t.getIdTim() == idTarget) {
-
-                            daftarTim.remove(t);
-
-                            System.out.println(">> Pendaftaran tim berhasil dibatalkan/dihapus!");
-
-                            ditemukan = true;
-                            break;
-                        }
-                    }
-
-                    if (!ditemukan) {
-                        System.out.println(">> Tim tidak ditemukan!");
-                    }
-                }
-
-                case 5 -> {
-                    berjalan = false;
-                    System.out.println(">> Program selesai.");
-                }
-
-                default -> System.out.println(">> Pilihan tidak valid!");
+                case 1:
+                    tambahKategoriGame();
+                    break;
+                case 2:
+                    tambahTimEsports();
+                    break;
+                case 3:
+                    tampilkanSemuaPendaftaran();
+                    break;
+                case 4:
+                    System.out.println("Terima kasih telah menggunakan sistem pendaftaran tournament!");
+                    break;
+                default:
+                    System.out.println("Pilihan menu tidak valid. Harap pilih angka 1-4.");
             }
-            System.out.println();
+        } while (pilihan != 4);
+    }
+
+    // Fungsi Pengisian Dummy Data Awal
+    private static void isiDummyData() {
+        daftarPendaftaran.add(new KategoriGame("TRN-001", "Evos Squad", 150000, "Mobile Legends", 50000));
+        daftarPendaftaran.add(new TimEsports("TRN-002", "RRQ Hoshi", 300000, 5, 0.10, 100000));
+    }
+
+    private static void tambahKategoriGame() {
+        System.out.println("\n--- Tambah Pendaftaran Kategori Game ---");
+        String id = inputStringValid("ID Pendaftaran     : ");
+        String nama = inputStringValid("Nama Tim           : ");
+        double biayaDasar = inputDoubleValid("Biaya Dasar        : Rp ");
+        String namaGame = inputStringValid("Nama Game          : ");
+        double biayaSlot = inputDoubleValid("Biaya Slot Tambahan: Rp ");
+
+        daftarPendaftaran.add(new KategoriGame(id, nama, biayaDasar, namaGame, biayaSlot));
+        System.out.println("-> Pendaftaran Kategori Game berhasil ditambahkan!");
+    }
+
+    private static void tambahTimEsports() {
+        System.out.println("\n--- Tambah Pendaftaran Tim Esports Pro ---");
+        String id = inputStringValid("ID Pendaftaran       : ");
+        String nama = inputStringValid("Nama Tim             : ");
+        double biayaDasar = inputDoubleValid("Biaya Dasar          : Rp ");
+        int jumlahPemain = inputIntegerValid("Jumlah Pemain        : ");
+        double diskonPersen = inputDoubleValid("Diskon Komunitas (%) : ");
+        double biayaVIP = inputDoubleValid("Biaya Fasilitas VIP  : Rp ");
+
+        daftarPendaftaran.add(new TimEsports(id, nama, biayaDasar, jumlahPemain, diskonPersen / 100, biayaVIP));
+        System.out.println("-> Pendaftaran Tim Esports Pro berhasil ditambahkan!");
+    }
+
+    private static void tampilkanSemuaPendaftaran() {
+        System.out.println("\n--- DAFTAR PENDAFTARAN TOURNAMENT ---");
+        if (daftarPendaftaran.isEmpty()) {
+            System.out.println("Belum ada data pendaftaran.");
+            return;
         }
 
-        scanner.close();
+        for (int i = 0; i < daftarPendaftaran.size(); i++) {
+            Tournament t = daftarPendaftaran.get(i);
+            System.out.println("\nData ke-" + (i + 1));
+            t.tampilkanInfo(); // Menerapkan Polymorphism Overriding
+
+            // Demonstrasi Polymorphism Overloading
+            if (t instanceof KategoriGame) {
+                KategoriGame kg = (KategoriGame) t;
+                System.out.printf("   [Promo Early] Jika dapat promo 10%%     : Rp %,.2f\n", kg.hitungTotalBiaya(10.0));
+            } else if (t instanceof TimEsports) {
+                TimEsports te = (TimEsports) t;
+                System.out.printf("   [Opsi Hemat] Jika tanpa fasilitas VIP : Rp %,.2f\n", te.hitungTotalBiaya(true));
+            }
+            System.out.println("----------------------------------------");
+        }
+    }
+
+    // --- HELPER METHOD UNTUK VALIDASI INPUT ---
+
+    private static String inputStringValid(String pesan) {
+        String input = "";
+        while (input.trim().isEmpty()) {
+            System.out.print(pesan);
+            input = scanner.nextLine();
+            if (input.trim().isEmpty()) {
+                System.out.println("Input tidak boleh kosong! Silakan masukkan lagi.");
+            }
+        }
+        return input;
+    }
+
+    private static int inputIntegerValid(String pesan) {
+        int angka = 0;
+        boolean valid = false;
+        while (!valid) {
+            System.out.print(pesan);
+            if (scanner.hasNextInt()) {
+                angka = scanner.nextInt();
+                scanner.nextLine();
+                valid = true;
+            } else {
+                System.out.println("Input harus berupa angka bulat!");
+                scanner.nextLine();
+            }
+        }
+        return angka;
+    }
+
+    private static double inputDoubleValid(String pesan) {
+        double angka = -1;
+        boolean valid = false;
+        while (!valid) {
+            System.out.print(pesan);
+            if (scanner.hasNextDouble()) {
+                angka = scanner.nextDouble();
+                scanner.nextLine();
+                if (angka >= 0) {
+                    valid = true;
+                } else {
+                    System.out.println("Nilai tidak boleh negatif!");
+                }
+            } else {
+                System.out.println("Input harus berupa angka!");
+                scanner.nextLine();
+            }
+        }
+        return angka;
     }
 }
